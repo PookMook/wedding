@@ -1,0 +1,148 @@
+
+body{
+
+  padding:0;
+  margin:0;
+  font-size:1.25vw;
+}
+
+h1 {
+  font-family: 'Engagement', cursive;
+  font-weight:normal;
+  font-size: 12em;
+  margin:0;
+}
+h2{
+font-family: 'Engagement', cursive;
+  font-weight:normal;
+  font-size: 6em;
+  margin:0;
+}
+
+h3 {
+  font-family: 'Open Sans', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  font-size:2em;
+  margin:0;
+}
+p{
+  font-family: 'PT Serif', serif;
+  font-size:1rem;
+  line-height: 1.714;
+  color: #999999;
+}
+a {
+  text-decoration:none;
+  color:#674172;
+  font-family: 'Open Sans', sans-serif;
+}
+
+
+nav {
+  transition:background-color 1s ease;
+  padding:0 3em;
+  box-sizing:border-box;
+  position:fixed;
+  background-color:rgba(255,255,255,0);
+  top:0;
+  left:0;
+  z-index:3;
+  display:flex;
+  flex-direction:row;
+  flex-wrap:nowrap;
+  width:100%;
+}
+nav.page {
+  background-color:rgba(103,65,114,1);
+}
+nav > a {
+  display:block;
+  padding:1em;
+  flex:0 0 auto;
+  color:#674172;
+  font-size:0.8em;
+  transition:color 1s ease;
+  cursor:pointer;
+  user-select: none;
+}
+nav.page > a {
+  color:white;
+}
+nav > div {
+  flex:1 1 auto;
+}
+body > section {
+  padding:3em 2em;
+  text-align:center;
+}
+body > section:nth-child(4n+1){
+  background-color:#F9F5FA;
+}
+section.cover{
+  width:100%;
+  height:100vh;
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+  text-shadow:0 0 1em white;
+}
+
+section.centered{
+  display:flex;
+  justify-content:center;
+  align-items: center;
+  flex-direction:column;
+}
+section#cover {
+  position:relative;
+  z-index:1;
+}
+section#cover > div.slideshow{
+  position:absolute;
+  background-size:cover;
+  top:0;
+  bottom:0;
+  left:0;
+  right:0;
+  z-index:-2;
+  opacity:0;
+  transition:opacity 2s ease;
+}
+section#cover > div.slideshow.active{
+  opacity:1;
+  z-index:-1;
+}
+article.coeurcoeurcoeur {
+  display:inline-flex;
+  flex-direction:column;
+  align-items:center;
+}
+div.coeurcoeurcoeur{
+  display:flex;
+  flex-direction:row;
+  flex-wrap:nowrap;
+  align-items:center;
+  width:100%;
+}
+div.coeurcoeurcoeur:before,div.coeurcoeurcoeur:after {
+  flex:1 1 auto;
+  border-top:0.1em solid #674172;
+  height:0;
+  content: "";
+}
+div.coeurcoeurcoeur > p {
+  margin:0 1em;
+}
+div.coeurcoeurcoeur > p.fa-heart:before {
+  font-size:2vw;
+  color:#674172;
+    flex: 0 0 auto;
+    display: inline-block;
+    font-family: FontAwesome;
+    font-style: normal;
+    font-weight: normal;
+    line-height: 1;
+    -webkit-font-smoothing: antialiased;
+    content: "\f004";
+}
