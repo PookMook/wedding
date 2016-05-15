@@ -83,7 +83,9 @@ app.post('/upload/picture', function(req, res){
   var allowed = false;
   var who = "";
   form.on('field', function(name, value) {
+    console.log("Entered the veri fication loop");
       if(name == "code"){
+        console.log("code found!");
         checkCode.each(value,function(err,row){
           if(who == ""){
             who = row.name;
