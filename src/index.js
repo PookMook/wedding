@@ -33,13 +33,11 @@ db.serialize(function() {
   //insert admin here
       admin.run("Arthur","MyPassword",1);
       admin.run("Catherine","MyPassword",1);
-    admin.finalize();
 
   }
 
-  //Prepared statement that checks userCode
 
-  db.each("SELECT rowid AS id, name,code FROM invite", function(err, row) {
+  db.each("SELECT id AS id,name,code FROM invite", function(err, row) {
     console.log("Invites : " + row.id + ": " + row.name + ": " + row.code);
   });
 });
