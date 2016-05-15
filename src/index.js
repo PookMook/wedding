@@ -82,8 +82,9 @@ app.post('/upload/picture', function(req, res){
   form.uploadDir = path.join(__dirname, '/uploads');
   var allowed = false;
   var who = "";
+  var code = "";
   form.on('field', function(name, value) {
-    console.log("Entered the veri fication loop");
+    console.log("Enter the verification loop");
       if(name == "code"){
         console.log("code found!");
         checkCode.each(value,function(err,row){
@@ -93,29 +94,27 @@ app.post('/upload/picture', function(req, res){
           else{
             who += " & "+row.name;
           }
+          code = value;
           allowed = true;
-        },function(){
-          console.log(who);
-          form.on('file', function(field, file) {
-            console.log("start uploading");
-            if(allowed){
-              console.log(value + " has uploaded a picture");
-              fileName = makeid()+(Date.now()/1000)+file.name;
-              addPicture.run(fileName,value,Date.now());
-              fs.rename(file.path, path.join(form.uploadDir, fileName));
-              io.sockets.emit('newPicture', {picture : fileName, who : who, time : Date.now()});
-            }
-            else{
-              console.log(value + " tried to upload a picture but was bounced");
-              fs.unlink(file.path);
-            }
-          });
-        });
-      }
-    });
+        }
+      )};
+  });
   // every time a file has been uploaded successfully,
   // rename it to a timestamp + random number + it's orignal name
-
+  form.on('file', function(field, file) {
+    console.log("start uploading");
+    if(allowed){
+      console.log(who + " has uploaded a picture");
+      fileName = makeid()+(Date.now()/1000)+file.name;
+      addPicture.run(fileName,code,Date.now());
+      fs.rename(file.path, path.join(form.uploadDir, fileName));
+      io.sockets.emit('newPicture', {picture : fileName, who : who, time : Date.now()});
+    }
+    else{
+      console.log(who + " tried to upload a picture but was bounced");
+      fs.unlink(file.path);
+    }
+  });
 
   // log any errors that occur
   form.on('error', function(err) {

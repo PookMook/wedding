@@ -73,13 +73,13 @@ $(document).ready(function(){
       if (files.length > 0){
         // One or more files selected, process the file upload
           var formData = new FormData();
+          formData.append('code',code);
           // loop through all the selected files
           for (var i = 0; i < files.length; i++) {
             var file = files[i];
             // add the files to formData object for the data payload
             formData.append('uploads[]', file, file.name);
           }
-          formData.append('code',code);
           $.ajax({
           url: '/upload/picture',
           type: 'POST',
