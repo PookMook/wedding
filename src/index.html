@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <script src="https://code.jquery.com/jquery-git.js"></script>
-  <script src="side/client.js"></script>
+  <script src="/side/jquery-2.2.3.min.js"></script>
+  <script src="/side/socket.io-1.4.5.js"></script>
+  <script src="/side/client.js"></script>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width">
   <link href='https://fonts.googleapis.com/css?family=Engagement|Open+Sans:700|PT+Serif' rel='stylesheet' type='text/css'>
@@ -51,10 +52,9 @@
     <article class="coeurcoeurcoeur">
        <h2>La cérémonie</h2>
        <div class="coeurcoeurcoeur"><p class="fa-heart"></p></div>
-      <div class="overlay" onClick="style.pointerEvents='none'" style="background:transparent; position:relative;width:100vw;height:20vw;top:20vw;margin-top:-20vw;margin-left:-2em"></div>
-      <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d88583.70654998353!2d-75.87076845022641!3d45.60284573243593!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4cd1dd88cf303bb3%3A0xb2ea72792aadf925!2sLe+Belvedere!5e0!3m2!1sfr!2sca!4v1461981458458" frameborder="0" style="border:0;width:100vw;height:20vw;margin-left:-2em" allowfullscreen></iframe>
-      <div></div>
-    </article>
+       </article>
+      <div class="overlay"><a target="_blank"  href="https://www.google.ca/maps/place/Le+Belvedere/@45.6243979,-75.889458,13.38z/data=!4m5!3m4!1s0x4cd1dd88cf303bb3:0xb2ea72792aadf925!8m2!3d45.6404327!4d-75.8773433"><img src="/side/img/wakefield.png" alt="" /></a>
+      </div>
   </section>
   <a name="confirmer"></a>
   <section id="confirmer">
@@ -68,13 +68,23 @@
     <article class="coeurcoeurcoeur">
        <h2>Le barbecue</h2>
        <div class="coeurcoeurcoeur"><p class="fa-heart"></p></div>
-    </article></section>
+    </article>
+
+   <div class="overlay"><a target="_blank"  href="https://www.google.ca/maps/place/23+Rue+de+la+Fontaine,+89410+B%C3%A9on,+France/@47.9529967,3.3183796,17z/data=!3m1!4b1!4m5!3m4!1s0x47efaeccd3828673:0x2e3ad7ba814e6fa2!8m2!3d47.9529931!4d3.3205736"><img src="/side/img/beon.png" alt="" /></a>
+   </div>
+    </section>
   <a name="photos"></a>
   <section id="photos">
     <article class="coeurcoeurcoeur">
        <h2>Les photos</h2>
        <div class="coeurcoeurcoeur"><p class="fa-heart"></p></div>
+       <form class="uploadPicture" method="post" action="/upload/picture">
+         <input type="file" name="picture[]" id="uploadPicture">
+       </form>
     </article>
+    <div class="grid">
+  <div class="grid-sizer" style="clear:both;"></div>
+  </div>
   </section>
   <a name="livredor"></a>
   <section id="livredor">

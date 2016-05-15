@@ -146,3 +146,30 @@ div.coeurcoeurcoeur > p.fa-heart:before {
     -webkit-font-smoothing: antialiased;
     content: "\f004";
 }
+
+section#ceremonie,section#barbecue {
+  position:relative;
+  padding-bottom: calc(25vw + 3em);
+}
+section#ceremonie > div.overlay,section#ceremonie > div.overlay > a,section#ceremonie > div.overlay > a > img,section#barbecue > div.overlay,section#barbecue > div.overlay > a,section#barbecue > div.overlay > a > img{
+  display:block;
+  border: 0;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+}
+
+.grid{
+  display:flex;
+  flex-direction:row;
+  flex-wrap: wrap;
+}
+.grid-item {
+  flex:1 1 30%;margin:0}
+.grid-item--width2 { width: 50%; }
+
+.grid-item > img {
+  width:100%;
+}
