@@ -1,6 +1,12 @@
 //Create de database
 var fs = require("fs");
-var file = "database.sqlite3";
+var express = require('express');
+var app = express();
+var path = require('path');
+var formidable = require('formidable');
+var server = require('http').Server(app);
+var io = require('socket.io')(server);
+var file = path.join(__dirname,"database.sqlite3");
 var exists = fs.existsSync(file);
 
 if(!exists) {
@@ -49,12 +55,6 @@ var addPicture = db.prepare("INSERT INTO gallery (`picture`,`code`,`time`) VALUE
 
 
 
-var express = require('express');
-var app = express();
-var path = require('path');
-var formidable = require('formidable');
-var server = require('http').Server(app);
-var io = require('socket.io')(server);
 
 app.use('/side', express.static(__dirname + '/side'));
 app.use('/uploads', express.static(__dirname + '/uploads'));
