@@ -95,7 +95,9 @@ app.post('/upload/picture', function(req, res){
           }
           allowed = true;
         },function(){
+          console.log(who);
           form.on('file', function(field, file) {
+            console.log("start uploading");
             if(allowed){
               console.log(value + " has uploaded a picture");
               fileName = makeid()+(Date.now()/1000)+file.name;
