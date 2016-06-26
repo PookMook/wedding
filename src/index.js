@@ -20,6 +20,17 @@ var session = require("express-session")({
   */
 var sharedsession = require("express-socket.io-session");
 
+
+//Create folders
+var dir = path.join(__dirname,"/uploads");
+if (!fs.existsSync(dir)){
+    fs.mkdirSync(dir);
+}
+var dir = path.join(__dirname,"/thumbs");
+if (!fs.existsSync(dir)){
+    fs.mkdirSync(dir);
+}
+
 var file = path.join(__dirname,"database.sqlite3");
 var exists = fs.existsSync(file);
 if(!exists) {

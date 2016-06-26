@@ -3,3 +3,4 @@ src/uploads/
 src/sessions/
 src/node_modules/
 src/database.sqlite3
+src/npm-debug.log
