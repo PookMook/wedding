@@ -161,13 +161,46 @@ section#ceremonie > div.overlay,section#ceremonie > div.overlay > a,section#cere
   width: 100%;
 }
 
+form.uploadPicture{
+  padding:2em 0;
+
+}
+
+label.button{
+  padding:2em;
+  border:1px solid #674172;
+  display:inline-block;
+  background-color: white;
+  color:#674172;
+  cursor:pointer;
+}
+label.button:hover{
+  color:white;
+  border-color:#674172;
+  background-color: #674172;
+}
+label.button > i {
+  margin-right: 0.5em;
+}
+input.hidden{
+  display:none;
+}
+
 .grid{
   display:flex;
   flex-direction:row;
   flex-wrap: wrap;
+  max-width:calc((3 * 579px) + 2em );
+  margin:0 auto;
 }
 .grid-item {
-  flex:1 1 30%;margin:0}
+  flex:1 1 calc((100% - 2em) / 3);
+  margin:0 1em 1em 0;
+  max-width: 579px;
+}
+  .grid-item:nth-child(3n) {
+    margin-right: 0;
+  }
 .grid-item--width2 { width: 50%; }
 
 .grid-item > img {

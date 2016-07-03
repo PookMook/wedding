@@ -11,7 +11,9 @@ $(document).ready(function(){
   });
 
   setInterval(function(){$("#cover").trigger("click");},5000);
-  $("#cover").css("height",window.innerHeight+"px");
+  $(window).load(function(){
+    $("#cover").css("height",window.innerHeight+"px");
+  });
 
 
   $(window).on("scroll",function(){
@@ -48,6 +50,9 @@ $(document).ready(function(){
           }
           delete aux;
       }
+      else{
+        askForCode();
+      }
     });
 
     socket.on('authSuccess',addUploadPicture);
@@ -64,7 +69,14 @@ $(document).ready(function(){
         console.log('Add pic:', data.picture);
         $item = $('<figure class="grid-item"><img src="/thumbs/'+data.picture+'" data-who="'+data.who+'" data-time="'+data.time+'"></figure>');
       $(".grid").prepend( $item );
-
+    });
+    socket.on('loadPicture', function(data) {
+      console.log(data);
+      for(i=0;i<data.length;i++){
+        console.log('Add pic:', data[i].picture);
+        $item = $('<figure class="grid-item"><img src="/thumbs/'+data[i].picture+'" data-who="'+data[i].who+'" data-time="'+data[i].time+'"></figure>');
+        $(".grid").append( $item );
+      }
     });
 
 
@@ -72,7 +84,7 @@ $(document).ready(function(){
 
 
     function addUploadPicture(){
-      $uploadPicture = $('<form class="uploadPicture" method="post" action="/upload/picture"><input type="file" name="picture" id="uploadPicture"  accept="image/*" capture></form>');
+      $uploadPicture = $('<form class="uploadPicture" method="post" action="/upload/picture"><label for="uploadPicture" class="button"><i class="fa fa-camera" aria-hidden="true"></i>Prendre une photo</label><input type="file" name="picture" id="uploadPicture"  accept="image/*;capture=camera" capture class="hidden"></form>');
       $(".uploadPicture").remove();
       $("section#photos").children("article.coeurcoeurcoeur").after($uploadPicture);
       $('#uploadPicture').on('change', function(){
@@ -98,6 +110,9 @@ $(document).ready(function(){
           });
         }
       });
+    }
+    function askForCode(){
+
     }
 
 });

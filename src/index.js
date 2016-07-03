@@ -68,6 +68,10 @@ db.serialize(function() {
 var checkCode = db.prepare("SELECT id,group_concat(name, ' & ') as name,max(admin) as admin FROM invite WHERE code = ? GROUP BY code");
 var addPicture = db.prepare("INSERT INTO gallery (`picture`,`code`,`time`) VALUES (?,?,?)");
 
+//Add join table for codes
+var loadPicture = db.prepare("SELECT picture, code, time FROM gallery ORDER BY id DESC LIMIT 6 OFFSET 0");
+var loadAllPicture = db.prepare("SELECT picture, code, time FROM gallery ORDER BY id DESC");
+
 
 // Attach session
 app.use(session);
@@ -86,8 +90,6 @@ app.get('/', function(req, res) {
 
 
 app.post('/upload/picture', function(req, res){
-
-
   //if user is loged in :
   if(undefined != req.session.code){
     // create an incoming form object
@@ -146,6 +148,13 @@ io.on('connection', function(socket) {
       socket.emit('authReady');
     }
 
+    var pictures = [];
+      db.each("SELECT picture, code, time FROM gallery ORDER BY id DESC LIMIT 6 OFFSET 0",function(err,row){
+        pictures.push(row);
+      },function(){
+        socket.emit('loadPicture',pictures);
+    });
+
     socket.on('auth', function(data) {
         var allowed = false;
         checkCode.each(data.code,function(err,row){
@@ -165,11 +174,14 @@ io.on('connection', function(socket) {
             console.log('Auth successfull : ' + socket.handshake.session.name);
           }
           else{
+            socket.emit('authDenied');
             console.log('Auth denied!');
           }
         });
     });
 
+    socket.on('loadImage', function(data) {
+    });
 
     socket.on('disconnect', function(data) {
         clients--;
@@ -195,4 +207,4 @@ function makeid()
 }
 
 
-server.listen(80);
+server.listen(8080);
