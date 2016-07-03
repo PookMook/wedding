@@ -161,12 +161,12 @@ section#ceremonie > div.overlay,section#ceremonie > div.overlay > a,section#cere
   width: 100%;
 }
 
-form.uploadPicture{
+form.uploadPicture, div.uploadPicture{
   padding:2em 0;
 
 }
 
-label.button{
+label.button,p.button{
   padding:2em;
   border:1px solid #674172;
   display:inline-block;
@@ -174,7 +174,7 @@ label.button{
   color:#674172;
   cursor:pointer;
 }
-label.button:hover{
+label.button:hover,p.button:hover{
   color:white;
   border-color:#674172;
   background-color: #674172;

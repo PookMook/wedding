@@ -112,9 +112,13 @@ $(document).ready(function(){
       });
     }
     function askForCode(){
-      $askForCode = $('<p class="uploadPicture"><i class="fa fa-lock" aria-hidden="true"></i> Déverouiller</p>');
+      $askForCode = $('<div class="uploadPicture"><p class="button" id="clickForCode"><i class="fa fa-lock" aria-hidden="true"></i> Déverouiller</p></div>');
       $(".uploadPicture").remove();
       $("section#photos").children("article.coeurcoeurcoeur").after($askForCode);
+      $("#clickForCode").on("click",function(){
+        $popupCode = $('<div id="blackout"></div><div id="popupMax"><div id="popup"></div></div>');
+        $('body').append($popupCode);
+      });
 
     }
 
