@@ -105,7 +105,7 @@ app.post('/upload/picture', function(req, res){
         fileName = makeid()+(Date.now()/1000)+file.name;
         addPicture.run(fileName,req.session.code,Date.now());
         fs.rename(file.path, path.join(form.uploadDir, fileName));
-        gm(path.join(form.uploadDir, fileName)).resize(579,579,"^").autoOrient().gravity('Center').extent(579, 579).write(path.join(thumbPath,fileName), function (err) {
+        gm(path.join(form.uploadDir, fileName)).resize(580,580,"^").autoOrient().gravity('Center').extent(580, 580).write(path.join(thumbPath,fileName), function (err) {
           if(err){console.log(err);}
           else{io.sockets.emit('newPicture', {picture : fileName, who : req.session.name, time : Date.now()});}
         });
@@ -149,7 +149,7 @@ io.on('connection', function(socket) {
     }
 
     var pictures = [];
-      db.each("SELECT picture, code, time FROM gallery ORDER BY id DESC LIMIT 6 OFFSET 0",function(err,row){
+      db.each("SELECT picture, code, time FROM gallery WHERE unpublish = 0 ORDER BY id DESC LIMIT 6 OFFSET 0",function(err,row){
         pictures.push(row);
       },function(){
         socket.emit('loadPicture',pictures);

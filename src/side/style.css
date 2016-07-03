@@ -26,7 +26,7 @@ h3 {
   font-size:2em;
   margin:0;
 }
-p{
+p,input{
   font-family: 'PT Serif', serif;
   font-size:1rem;
   line-height: 1.714;
@@ -146,6 +146,9 @@ div.coeurcoeurcoeur > p.fa-heart:before {
     -webkit-font-smoothing: antialiased;
     content: "\f004";
 }
+.fa-heart {
+  padding:0.1em;
+}
 
 section#ceremonie,section#barbecue {
   position:relative;
@@ -171,22 +174,75 @@ section#ceremonie > div.overlay,section#ceremonie > div.overlay > a,section#cere
  {
    background-color: rgba(0, 0, 0, 0.7);
    cursor: pointer;
+   z-index: 4;
 }
 #popupMax {
   pointer-events: none;
   display:flex;
   align-items: center;
   justify-content: center;
+  z-index: 5;
 }
 #popup {
+  position: relative;
   width: 40em;
   min-height: calc(25vh);
   max-height: 90vh;
   background-color: white;
   pointer-events: auto;
+  padding:1em;
+  text-align: center;
+}
+#popup > #closeModal{
+    position: absolute;
+    font-size: 2em;
+    right: calc(-0.5em - 2px);
+    top: calc(-0.5em - 2px);
+    cursor: pointer;
+    color: white;
+    border: 2px solid white;
+    background-color: black;
+    border-radius: 1em;
+    z-index: 6;
+    width: 1em;
+    text-align: center;
+    display: block;
+    padding: 0.1em;
 }
 
-form.uploadPicture, div.uploadPicture{
+#popup > h1 {
+  font-size:3em;
+  margin-bottom:0.5em;
+  text-align: center;
+}
+
+#popup > input {
+  padding:1em 2em;
+  border:1px solid;
+  width:40%;
+  text-align: center;
+  font-size: 1.2em;
+  font-weight: bold;
+  box-sizing: border-box;
+  border-color:#674172;
+  color: #674172;
+  display:inline-block;
+}
+#popup > p {
+
+  font-size: 1.2em;
+    padding:1em 2em;
+    border:1px solid;
+  width:40%;
+  box-sizing: border-box;
+  display:inline-block;
+  color:white;
+  border-color:#674172;
+  background-color: #674172;
+  cursor:pointer;
+}
+
+form.uploadPicture, div.unlockCode{
   padding:2em 0;
 
 }
@@ -215,7 +271,7 @@ input.hidden{
   display:flex;
   flex-direction:row;
   flex-wrap: wrap;
-  max-width:calc((3 * 579px) + 2em );
+  max-width:calc((3 * 290px) + 2em );
   margin:0 auto;
 }
 .grid-item {

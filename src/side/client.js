@@ -56,6 +56,7 @@ $(document).ready(function(){
     });
 
     socket.on('authSuccess',addUploadPicture);
+    socket.on('authDenied',askForCode);
     socket.on('announcements', function(data) {
         console.log('Got announcement:', data.message);
     });
@@ -71,7 +72,6 @@ $(document).ready(function(){
       $(".grid").prepend( $item );
     });
     socket.on('loadPicture', function(data) {
-      console.log(data);
       for(i=0;i<data.length;i++){
         console.log('Add pic:', data[i].picture);
         $item = $('<figure class="grid-item"><img src="/thumbs/'+data[i].picture+'" data-who="'+data[i].who+'" data-time="'+data[i].time+'"></figure>');
@@ -84,8 +84,10 @@ $(document).ready(function(){
 
 
     function addUploadPicture(){
+      $("#blackout,#popupMax").remove();
       $uploadPicture = $('<form class="uploadPicture" method="post" action="/upload/picture"><label for="uploadPicture" class="button"><i class="fa fa-camera" aria-hidden="true"></i>Prendre une photo</label><input type="file" name="picture" id="uploadPicture"  accept="image/*;capture=camera" capture class="hidden"></form>');
       $(".uploadPicture").remove();
+      $(".unlockCode").remove();
       $("section#photos").children("article.coeurcoeurcoeur").after($uploadPicture);
       $('#uploadPicture').on('change', function(){
         var files = $(this).get(0).files;
@@ -112,16 +114,34 @@ $(document).ready(function(){
       });
     }
     function askForCode(){
-      $askForCode = $('<div class="uploadPicture"><p class="button" id="clickForCode"><i class="fa fa-lock" aria-hidden="true"></i> Déverouiller</p></div>');
+      $askForCode = $('<div class="unlockCode"><p class="button clickForCode faa-parent animated-hover"><i class="fa fa-lock faa-vertical" aria-hidden="true"></i> Déverouiller</p></div>');
       $(".uploadPicture").remove();
-      $("section#photos").children("article.coeurcoeurcoeur").after($askForCode);
-      $("#clickForCode").on("click",function(){
-        $popupCode = $('<div id="blackout"></div><div id="popupMax"><div id="popup"></div></div>');
+      $(".unlockCode").remove();
+      $("section#photos,section#livredor,section#confirmer").children("article.coeurcoeurcoeur").after($askForCode);
+      $(".clickForCode").hover(function(){
+        console.log("hovering");
+        $(this).children("i.fa").removeClass("fa-lock").addClass("fa-unlock-alt");
+      },function(){
+        $(this).children("i.fa").removeClass("fa-unlock-alt").addClass("fa-lock");
+      });
+      $(".clickForCode").on("click",function(){
+        $popupCode = $('<div id="blackout"></div><div id="popupMax"><div id="popup"><i class="fa fa-times" aria-hidden="true" id="closeModal"></i><h1>Entrez le code reçu par courriel</h1><input type="text" placeholder="MonSuperCode" name="code"><p id="sendCode"><i class="fa fa-cog" aria-hidden="true"></i> Déverouiller</p></div></div>');
         $('body').append($popupCode);
-        $("#blackout").on("click",function(){
+        $("#closeModal").on("click",function(){
           console.log("remove popup");
           $("#blackout").remove();
           $("#popupMax").remove();
+        });
+        $("#blackout").on("click",function(){
+          $("#closeModal").trigger("click");
+        });
+        $("#sendCode").on("click",function(){
+          $(this).children("i.fa").addClass("faa-spin animated");
+          console.log($(this).prev("input").val());
+          socket.emit('auth', { code: $(this).prev("input").val() });
+          socket.on("authDenied",function(){
+            $("#sendCode").html('<i class="fa fa-exclamation-triangle faa-ring animated" aria-hidden="true"></i> Oups, réessayer');
+          });
         });
       });
 
