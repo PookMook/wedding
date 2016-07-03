@@ -112,6 +112,9 @@ $(document).ready(function(){
       });
     }
     function askForCode(){
+      $askForCode = $('<p class="uploadPicture"><i class="fa fa-lock" aria-hidden="true"></i> Déverouiller</p>');
+      $(".uploadPicture").remove();
+      $("section#photos").children("article.coeurcoeurcoeur").after($askForCode);
 
     }
 
