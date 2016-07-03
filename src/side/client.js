@@ -78,6 +78,20 @@ $(document).ready(function(){
         $(".grid").append( $item );
       }
     });
+    socket.on('loadAllPicture', function(data) {
+      $(".grid").removeClass("max6").children(".grid-item:gt(5)").remove();
+      $("#loadAllPicture").remove();
+      for(i=0;i<data.length;i++){
+        console.log('Add pic:', data[i].picture);
+        $item = $('<figure class="grid-item"><img src="/thumbs/'+data[i].picture+'" data-who="'+data[i].who+'" data-time="'+data[i].time+'"></figure>');
+        $(".grid").append( $item );
+      }
+    });
+
+    $("#loadAllPicture").on("click",function(){
+      $(this).children("i.fa").addClass("faa-spin animated");
+      socket.emit('loadAllImage');
+    });
 
 
 

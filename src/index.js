@@ -180,7 +180,13 @@ io.on('connection', function(socket) {
         });
     });
 
-    socket.on('loadImage', function(data) {
+    socket.on('loadAllImage', function(data) {
+      var pictures = [];
+        db.each("SELECT picture, code, time FROM gallery WHERE unpublish = 0 ORDER BY id DESC LIMIT -1 OFFSET 6",function(err,row){
+          pictures.push(row);
+        },function(){
+          socket.emit('loadAllPicture',pictures);
+      });
     });
 
     socket.on('disconnect', function(data) {

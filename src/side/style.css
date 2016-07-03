@@ -242,9 +242,15 @@ section#ceremonie > div.overlay,section#ceremonie > div.overlay > a,section#cere
   cursor:pointer;
 }
 
-form.uploadPicture, div.unlockCode{
+form.uploadPicture, div.unlockCode, div.loadAll{
   padding:2em 0;
 
+}
+
+div.loadAll{
+  text-align: center;
+}
+div.loadAll > p {
 }
 
 label.button,p.button{
@@ -260,7 +266,7 @@ label.button:hover,p.button:hover{
   border-color:#674172;
   background-color: #674172;
 }
-label.button > i {
+label.button > i,p.button > i {
   margin-right: 0.5em;
 }
 input.hidden{
@@ -274,10 +280,13 @@ input.hidden{
   max-width:calc((3 * 290px) + 2em );
   margin:0 auto;
 }
+.grid.max6 > .grid-item:nth-child(n+7){
+  display:none;
+}
 .grid-item {
   flex:1 1 calc((100% - 2em) / 3);
   margin:0 1em 1em 0;
-  max-width: 579px;
+  max-width: 290px;
 }
   .grid-item:nth-child(3n) {
     margin-right: 0;
