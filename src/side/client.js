@@ -118,6 +118,11 @@ $(document).ready(function(){
       $("#clickForCode").on("click",function(){
         $popupCode = $('<div id="blackout"></div><div id="popupMax"><div id="popup"></div></div>');
         $('body').append($popupCode);
+        $("#blackout").on("click",function(){
+          console.log("remove popup");
+          $("#blackout").remove();
+          $("#popupMax").remove();
+        });
       });
 
     }

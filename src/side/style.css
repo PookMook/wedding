@@ -160,22 +160,30 @@ section#ceremonie > div.overlay,section#ceremonie > div.overlay > a,section#cere
   right: 0;
   width: 100%;
 }
-#blackout {
+#blackout,#popupMax {
   position: fixed;
   top:0;
   bottom:0;
   left:0;
   right:0;
-  background-color: rgba(255, 255, 255, 0.5);
 }
-
+#blackout
+ {
+   background-color: rgba(0, 0, 0, 0.7);
+   cursor: pointer;
+}
 #popupMax {
-  position: fixed;
-  top:0;
-  bottom:0;
-  left:0;
-  right:0;
-  background-color: rgba(255, 255, 255, 0.5);
+  pointer-events: none;
+  display:flex;
+  align-items: center;
+  justify-content: center;
+}
+#popup {
+  width: 40em;
+  min-height: calc(25vh);
+  max-height: 90vh;
+  background-color: white;
+  pointer-events: auto;
 }
 
 form.uploadPicture, div.uploadPicture{
