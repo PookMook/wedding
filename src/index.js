@@ -170,6 +170,8 @@ io.on('connection', function(socket) {
           allowed = true;
         },function(){
           if(allowed){
+
+          //todo : chercher toutes les infos sur les rsvp et les ajouter au socket emit
             socket.emit('authSuccess');
             console.log('Auth successfull : ' + socket.handshake.session.name);
           }

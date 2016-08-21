@@ -55,7 +55,10 @@ $(document).ready(function(){
       }
     });
 
-    socket.on('authSuccess',addUploadPicture);
+    socket.on('authSuccess',function(data){
+      rsvp(data,socket);
+      logedIn();
+    });
     socket.on('authDenied',askForCode);
     socket.on('announcements', function(data) {
         console.log('Got announcement:', data.message);
@@ -96,9 +99,11 @@ $(document).ready(function(){
 
 
 
-
-    function addUploadPicture(){
+    function logedIn(){
       $("#blackout,#popupMax").remove();
+      addUploadPicture();
+    }
+    function addUploadPicture(){
       $uploadPicture = $('<form class="uploadPicture" method="post" action="/upload/picture"><label for="uploadPicture" class="button"><i class="fa fa-camera" aria-hidden="true"></i>Prendre une photo</label><input type="file" name="picture" id="uploadPicture"  accept="image/*;capture=camera" capture class="hidden"></form>');
       $(".uploadPicture").remove();
       $(".unlockCode").remove();
@@ -126,6 +131,10 @@ $(document).ready(function(){
           });
         }
       });
+    }
+    function rsvp(data,socket){
+        $rsvp = $('<section id="rsvp"></section>');
+
     }
     function askForCode(){
       $askForCode = $('<div class="unlockCode"><p class="button clickForCode faa-parent animated-hover"><i class="fa fa-lock faa-vertical" aria-hidden="true"></i> Déverouiller</p></div>');
