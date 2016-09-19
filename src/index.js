@@ -46,31 +46,34 @@ db.serialize(function() {
   if(!exists) {
 
     //Create invite table for your guests
-    db.run("CREATE TABLE invite (id INTEGER PRIMARY KEY, name TEXT, status INTEGER DEFAULT 0, code TEXT, admin INTEGER DEFAULT 0)");
-    var admin = db.prepare("INSERT INTO invite (`name`, `code`, `admin`) VALUES (?,?,?)");
+    db.run("CREATE TABLE invite (id_user INTEGER PRIMARY KEY, name TEXT, status INTEGER DEFAULT 0, code TEXT, admin INTEGER DEFAULT 0, qc INTEGER DEFAULT 1, fr INTEGER DEFAULT 1, allergies TEXT)");
+    var admin = db.prepare("INSERT INTO invite (`name`, `code`, `admin`, 'qc', 'fr', 'allergies') VALUES (?,?,?,?,?,?)");
     //create gallery table for pictures of the wedding
-    db.run("CREATE TABLE coverPics (id INTEGER PRIMARY KEY, picture TEXT)");
+    db.run("CREATE TABLE coverPics (id_cover INTEGER PRIMARY KEY, picture TEXT)");
     //create gallery table for pictures of the wedding
-    db.run("CREATE TABLE gallery (id INTEGER PRIMARY KEY, picture TEXT, unpublish INTEGER DEFAULT 0, code TEXT, time INTEGER)");
+    db.run("CREATE TABLE gallery (id_pic INTEGER PRIMARY KEY, picture TEXT, unpublish INTEGER DEFAULT 0, code TEXT, time INTEGER)");
     //Create guestbook table
-    db.run("CREATE TABLE guestbook (id INTEGER PRIMARY KEY, text TEXT, unpublish INTEGER DEFAULT 0, code TEXT)");
+    db.run("CREATE TABLE guestbook (id_guest INTEGER PRIMARY KEY, text TEXT, unpublish INTEGER DEFAULT 0, code TEXT)");
   //insert admin here
-      admin.run("Arthur","MyPassword",1);
-      admin.run("Catherine","MyPassword",1);
+      admin.run("Arthur","MyPassword",1,2,2,"");
+      admin.run("Catherine","MyPassword",1,2,2,"");
   }
 
-  db.each("SELECT id AS id,name,code FROM invite", function(err, row) {
+  db.each("SELECT id_user AS id,name,code FROM invite", function(err, row) {
     console.log("Invites : " + row.id + ": " + row.name + ": " + row.code);
   });
 });
 
 //All prepared statement
-var checkCode = db.prepare("SELECT id,group_concat(name, ' & ') as name,max(admin) as admin FROM invite WHERE code = ? GROUP BY code");
+var checkCode = db.prepare("SELECT id_user,group_concat(name, ' & ') as name,max(admin) as admin FROM invite WHERE code = ? GROUP BY code");
+var peopleInfo = db.prepare("SELECT id_user,name,qc,fr,allergies FROM invite WHERE code = ?");
+var updatePeopleInfoQc = db.prepare("UPDATE invite SET qc = ? WHERE id_user = ? AND code = ?");
+var updatePeopleInfoFr = db.prepare("UPDATE invite SET fr = ? WHERE id_user = ? AND code = ?");
 var addPicture = db.prepare("INSERT INTO gallery (`picture`,`code`,`time`) VALUES (?,?,?)");
 
 //Add join table for codes
-var loadPicture = db.prepare("SELECT picture, code, time FROM gallery ORDER BY id DESC LIMIT 6 OFFSET 0");
-var loadAllPicture = db.prepare("SELECT picture, code, time FROM gallery ORDER BY id DESC");
+var loadPicture = db.prepare("SELECT g.picture, g.time, group_concat(i.name, ' & ') as who, g.id_pic FROM gallery g JOIN invite i WHERE g.unpublish = 0 GROUP BY g.id_pic ORDER BY g.id_pic DESC LIMIT 6 OFFSET 0");
+var loadAllPicture = db.prepare("SELECT g.picture, g.time, group_concat(i.name, ' & ') as who, g.id_pic FROM gallery g JOIN invite i WHERE g.unpublish = 0 GROUP BY g.id_pic ORDER BY g.id_pic DESC LIMIT -1 OFFSET 0");
 
 
 // Attach session
@@ -103,11 +106,16 @@ app.post('/upload/picture', function(req, res){
     form.on('file', function(field, file) {
       console.log(req.session.name + " has uploaded a picture");
         fileName = makeid()+(Date.now()/1000)+file.name;
-        addPicture.run(fileName,req.session.code,Date.now());
         fs.rename(file.path, path.join(form.uploadDir, fileName));
         gm(path.join(form.uploadDir, fileName)).resize(580,580,"^").autoOrient().gravity('Center').extent(580, 580).write(path.join(thumbPath,fileName), function (err) {
           if(err){console.log(err);}
-          else{io.sockets.emit('newPicture', {picture : fileName, who : req.session.name, time : Date.now()});}
+          else{
+            addPicture.run(fileName,req.session.code,Date.now(),function(err){
+                    if(err){}
+                    else{console.log("val  "+this.lastID);}
+                    io.sockets.emit('newPicture', {picture : fileName, who : req.session.name, time : Date.now(), id_pic : this.lastID});
+                  });
+          }
         });
 
     });
@@ -140,8 +148,14 @@ io.on('connection', function(socket) {
     });
 
     if(undefined != socket.handshake.session.name){
-    socket.emit('authSuccess');
-    console.log(socket.handshake.session.name+' joined ('+clients+' connected)');
+      socket.handshake.session.people = [];
+      peopleInfo.each(socket.handshake.session.code,function(err,person){
+        console.log("someone has been found : "+person.name);
+        socket.handshake.session.people.push({id:person.id_user,name:person.name,qc:person.qc,fr:person.fr,allergies:person.allergies});
+      },function(){
+        socket.emit('authSuccess',{admin : socket.handshake.session.admin, name : socket.handshake.session.name, people : socket.handshake.session.people});
+        console.log(socket.handshake.session.name+' joined ('+clients+' connected)');
+      });
     }
     else{
       console.log('New client ('+clients+' connected)');
@@ -149,7 +163,7 @@ io.on('connection', function(socket) {
     }
 
     var pictures = [];
-      db.each("SELECT picture, code, time FROM gallery WHERE unpublish = 0 ORDER BY id DESC LIMIT 6 OFFSET 0",function(err,row){
+      db.each("SELECT g.picture, g.time, group_concat(i.name, ' & ') as who, g.id_pic FROM gallery g JOIN invite i WHERE g.unpublish = 0 GROUP BY g.id_pic ORDER BY g.id_pic DESC LIMIT 6 OFFSET 0",function(err,row){
         pictures.push(row);
       },function(){
         socket.emit('loadPicture',pictures);
@@ -161,30 +175,76 @@ io.on('connection', function(socket) {
           socket.handshake.session.code = data.code;
           socket.handshake.session.name = row.name;
           socket.handshake.session.admin = row.admin;
-          session(socket.handshake, {}, function (err) {
-            if (err) { /* handle error */ }
-            var session = socket.handshake.session;
-            // and save session
-            session.save(function (err) { /* handle error */ })
-          });
+          socket.handshake.session.people = [];
           allowed = true;
         },function(){
-          if(allowed){
+          //Get people infos
+          peopleInfo.each(data.code,function(err,person){
+            console.log("someone has been found : "+person.name);
+            socket.handshake.session.people.push({id:person.id_user,name:person.name,qc:person.qc,fr:person.fr,allergies:person.allergies});
+          },function(){
+            if(allowed){
 
-          //todo : chercher toutes les infos sur les rsvp et les ajouter au socket emit
-            socket.emit('authSuccess');
-            console.log('Auth successfull : ' + socket.handshake.session.name);
+              session(socket.handshake, {}, function (err) {
+                if (err) { /* handle error */ }
+                var session = socket.handshake.session;
+                // and save session
+                session.save(function (err) { /* handle error */ })
+              });
+
+            //todo : chercher toutes les infos sur les rsvp et les ajouter au socket emit
+              socket.emit('authSuccess', {admin : socket.handshake.session.admin, name : socket.handshake.session.name, people : socket.handshake.session.people});
+              console.log('Auth successfull : ' + socket.handshake.session.name);
+            }
+            else{
+              socket.emit('authDenied');
+              console.log('Auth denied!');
+            }
+          });
+        }
+        );
+    });
+
+    socket.on('unpublish',function(data){
+      if(undefined != socket.handshake.session.admin && socket.handshake.session.admin == 1){
+        console.log(socket.handshake.session.name +" unpublished the picture" + data.unpublishPicture);
+      }
+    });
+
+    socket.on('rsvp',function(data){
+      //update rsvp :
+      if((data.where == "qc" || data.where == "fr") && (data.value === 0 || data.value === 2)){
+        //find id_user in people
+        for(i=0;i<socket.handshake.session.people.length;i++){
+          if(socket.handshake.session.people[i].id === data.id){
+            socket.handshake.session.people[i][data.where] = data.value;
+
+            console.log(socket.handshake.session.people[i].name + ' changed status to '+data.value+' for '+data.where);
+
+            //write session
+            session(socket.handshake, {}, function (err) {
+              if (err) { /* handle error */ }
+              var session = socket.handshake.session;
+              // and save session
+              session.save(function (err) { /* handle error */ })
+            });
+
+            //write SQL
+            if(data.where == "fr"){
+              updatePeopleInfoFr.run(data.value,data.id,socket.handshake.session.code);
+            }
+            else if(data.where == 'qc'){
+              updatePeopleInfoQc.run(data.value,data.id,socket.handshake.session.code);
+            }
+
           }
-          else{
-            socket.emit('authDenied');
-            console.log('Auth denied!');
-          }
-        });
+        }
+      }
     });
 
     socket.on('loadAllImage', function(data) {
       var pictures = [];
-        db.each("SELECT picture, code, time FROM gallery WHERE unpublish = 0 ORDER BY id DESC LIMIT -1 OFFSET 6",function(err,row){
+        db.each("SELECT g.picture, g.time, group_concat(i.name, ' & ') as who, g.id_pic FROM gallery g JOIN invite i WHERE g.unpublish = 0 GROUP BY g.id_pic ORDER BY g.id_pic DESC LIMIT -1 OFFSET 6",function(err,row){
           pictures.push(row);
         },function(){
           socket.emit('loadAllPicture',pictures);

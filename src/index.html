@@ -1,98 +1,187 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-  <script src="/side/jquery-2.2.3.min.js"></script>
-  <script src="/side/socket.io-1.4.5.js"></script>
-  <script src="/side/client.js"></script>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width">
-  <link href='https://fonts.googleapis.com/css?family=Engagement|Open+Sans:700|PT+Serif' rel='stylesheet' type='text/css'>
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css">
-  <link rel="stylesheet" href="/side/font-awesome-animation.min.css">
-  <link rel="stylesheet" href="/side/style.css">
-  <link rel="icon" type="image/png" href="/side/img/icon.png" />
-  <title>Catherine X Arthur</title>
+    <script src="/side/jquery-2.2.3.min.js"></script>
+    <script src="/side/socket.io-1.4.5.js"></script>
+    <script src="/side/client.js"></script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <link href='https://fonts.googleapis.com/css?family=Engagement|Open+Sans:700|PT+Serif' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/side/font-awesome-animation.min.css">
+    <link rel="stylesheet" href="/side/style.css">
+    <link rel="icon" type="image/png" href="/side/img/icon.png" />
+    <title>Catherine X Arthur</title>
 </head>
+
 <body>
-  <nav>
-    <a data-href="cover"><i class="fa fa-home" aria-hidden="true"></i></a>
-    <div></div>
-    <a data-href="bienvenue">Bienvenue</a>
-    <a data-href="ceremonie">La cérémonie</a>
-    <a data-href="confirmer">Confirmer votre présence</a>
-    <a data-href="barbecue">Le barbecue</a>
-    <a data-href="photos">Les photos</a>
-    <a data-href="livredor">Livre d'or</a>
-  </nav>
-  <a name="accueil"></a>
-  <section id="cover" class="cover centered">
-    <div class="slideshow active" style="background-image:url('https://1.bp.blogspot.com/-ku4Uf3x0qSI/VT09Dbw9iZI/AAAAAAAAEEU/KPHSAOa0ZDc/s1600/Le-Belvedere-Wakefield-Wedding-Photographer_0024.jpg')"></div>    <div class="slideshow" style="background-image:url('https://jbedfordphoto.files.wordpress.com/2014/08/joel-bedford-photography-le-belvedere-wedding-wakefield-52.jpg')"></div>    <div class="slideshow" style="background-image:url('https://jbedfordphoto.files.wordpress.com/2014/12/joel-bedford-photography-le-belvedere-wedding-wakefield-35.jpg?w=1024')"></div>
-    <h1>Catherine & Arthur</h1>
-    <article class="coeurcoeurcoeur">
-      <h3>Se marient le</h3>
-      <div class="coeurcoeurcoeur"><p class="fa-heart faa-tada animated"></p></div>
-      <h3>8 juin 2017</h3>
-    </article>
-  </section>
-  <a name="bienvenue"></a>
-  <section id="bienvenue" class="centered">
-    <article class="coeurcoeurcoeur">
-       <h2>Bienvenue</h2>
-       <div class="coeurcoeurcoeur"><p class="fa-heart faa-vertical animated"></p></div>
-    </article>
-    <p class="spaced">Bienvenue sur le site de notre mariage !</p>
-    <p>C'est un plaisir de partager cette bonne nouvelle avec vous. Nous sommes très heureux et nous avons énormément de plaisir à organiser un événement à notre image ! Vous trouverez donc ici toutes les informations importantes par rapport au mariage, qui seront complétées et mises à jour régulièrement.</p>
-
-<p>Pour nous contacter tous les deux, vous pouvez nous écrire à catherinexarthur@gmail.com.</p>
-
-<p>On a hâte de célébrer avec vous !</p>
-
-<p>xx <br>Catherine & Arthur</p>
-  </section>
-  <a name="ceremonie"></a>
-  <section id="ceremonie">
-    <article class="coeurcoeurcoeur">
-       <h2>La cérémonie</h2>
-       <div class="coeurcoeurcoeur"><p class="fa-heart faa-horizontal animated"></p></div>
-       </article>
-      <div class="overlay"><a target="_blank"  href="https://www.google.ca/maps/place/Le+Belvedere/@45.6243979,-75.889458,13.38z/data=!4m5!3m4!1s0x4cd1dd88cf303bb3:0xb2ea72792aadf925!8m2!3d45.6404327!4d-75.8773433"><img src="/side/img/wakefield.png" alt="" /></a>
-      </div>
-  </section>
-  <a name="confirmer"></a>
-  <section id="confirmer">
-    <article class="coeurcoeurcoeur">
-       <h2>Confirmer votre présence</h2>
-       <div class="coeurcoeurcoeur"><p class="fa-heart faa-float animated"></p></div>
-    </article>
-  </section>
-  <a name="barbecue"></a>
-  <section id="barbecue">
-    <article class="coeurcoeurcoeur">
-       <h2>Le barbecue</h2>
-       <div class="coeurcoeurcoeur"><p class="fa-heart faa-pulse animated"></p></div>
-    </article>
-
-   <div class="overlay"><a target="_blank"  href="https://www.google.ca/maps/place/23+Rue+de+la+Fontaine,+89410+B%C3%A9on,+France/@47.9529967,3.3183796,17z/data=!3m1!4b1!4m5!3m4!1s0x47efaeccd3828673:0x2e3ad7ba814e6fa2!8m2!3d47.9529931!4d3.3205736"><img src="/side/img/beon.png" alt="" /></a>
-   </div>
+    <nav class="hidden">
+        <div>
+            <a data-href="cover" class="lien"><i class="fa fa-home" aria-hidden="true"></i></a>
+            <div></div>
+            <a data-href="hamburger" id="hamburger"><i class="fa fa-bars" aria-hidden="true"></i></a>
+        </div>
+        <a class="expand" data-href="bienvenue">Bienvenue</a>
+        <a class="expand" data-href="quebec">Au Québec</a>
+        <a class="expand" data-href="france">En France</a>
+        <a class="expand" data-href="histoire">Notre Histoire</a>
+        <a class="expand" data-href="cadeaux">Cadeaux</a>
+        <a class="expand" data-href="photos">Photos</a>
+        <a class="expand" data-href="livredor">Livre d'or</a>
+    </nav>
+    <section id="cover" class="cover centered">
+        <div class="slideshow active" style="background-image:url('https://1.bp.blogspot.com/-ku4Uf3x0qSI/VT09Dbw9iZI/AAAAAAAAEEU/KPHSAOa0ZDc/s1600/Le-Belvedere-Wakefield-Wedding-Photographer_0024.jpg')"></div>
+        <div class="slideshow" style="background-image:url('https://jbedfordphoto.files.wordpress.com/2014/08/joel-bedford-photography-le-belvedere-wedding-wakefield-52.jpg')"></div>
+        <div class="slideshow" style="background-image:url('https://jbedfordphoto.files.wordpress.com/2014/12/joel-bedford-photography-le-belvedere-wedding-wakefield-35.jpg?w=1024')"></div>
+        <h1>Catherine & Arthur</h1>
+        <article class="coeurcoeurcoeur">
+            <h3>Se marient le</h3>
+            <div class="coeurcoeurcoeur">
+                <p class="fa-heart faa-tada animated"></p>
+            </div>
+            <h3>8 juin 2017</h3>
+        </article>
     </section>
-  <a name="photos"></a>
-  <section id="photos">
-    <article class="coeurcoeurcoeur">
-       <h2>Les photos</h2>
-       <div class="coeurcoeurcoeur"><p class="fa-heart faa-ring animated"></p></div>
-    </article>
-    <div class="grid max6">
-    </div>
-    <div class="loadAll">
-      <p class="button" id="loadAllPicture"><i class="fa fa-plus-circle" aria-hidden="true"></i>Charger toutes les images</p>
-    </div>
-  </section>
-  <a name="livredor"></a>
-  <section id="livredor">
-    <article class="coeurcoeurcoeur">
-       <h2>
+    <section id="bienvenue" class="centered">
+        <article class="coeurcoeurcoeur">
+            <h2>Bienvenue</h2>
+            <div class="coeurcoeurcoeur">
+                <p class="fa-heart faa-vertical animated"></p>
+            </div>
+        </article>
+        <div class="wrapper">
+            <p class="spaced">Bienvenue sur le site de notre mariage !</p>
+            <p>C'est un plaisir de partager cette bonne nouvelle avec vous. Nous sommes très heureux et nous avons énormément de plaisir à organiser un événement à notre image ! Vous trouverez donc ici toutes les informations importantes par rapport au mariage.</p>
+            <p>Pour nous contacter tous les deux, vous pouvez nous écrire à <a href="mailto:catherineXarthur@gmail.com">catherineXarthur@gmail.com</a>.</p>
+            <p>On a hâte de célébrer avec vous !</p>
+            <p>xx<br>Catherine & Arthur</p>
+        </div>
+    </section>
+    <section id="quebec">
+        <article class="coeurcoeurcoeur">
+            <h2>Au Québec</h2>
+            <div class="coeurcoeurcoeur">
+                <p class="fa-heart faa-horizontal animated"></p>
+            </div>
+        </article>
+        <div class="wrapper">
+            <h3>&nbsp;L'invitation</h3>
+            <p>C'est avec bonheur que nous vous invitons à notre mariage</p>
+            <p class="carton">jeudi le 8 juin 2017
+                <br>16 heures
+                <br>au Belvédère de Wakefield
+                <br>40 des Sentiers, Wakefield, Québec
+            </p>
+            <p>pour une cérémonie tenue à l'extérieur suivie d'un cocktail sur la terrasse, d'un souper aux saveurs du terroir et d'une soirée de festivités !</p>
+            <p>(Si la température n'est pas de la partie, tous les évènements seront tenus à l'intérieur.)</p>
+            <p>Nous sommes ravis de vous offrir des divertissements, des mets raffinés et des petites surprises dans un décor à couper le souffle. Veuillez noter que le bar sera ouvert dès la fin de la cérémonie et que les consommations et le service
+                de vin pendant le souper seront payants.</p>
+            <section id="rsvpQc" class="rsvp">
+              <h3>RSVP</h3>
+            </section>
+            <h3 class="rsvpBefore Qc">Comment s'y rendre</h3>
+            <p>Pour vous rendre au Belvédère, en arrivant d'Ottawa ou de Gatineau, il suffit de prendre l'autoroute 5 Nord jusqu'au bout, puis à la bifurcation de prendre la route 105, à votre droite. Vous passerez un pont et des lumières, vous tournerez
+                à droite sur le chemin Geggie, et de là, vous suivrez les indications pour le Belvédère !
+                <br> Voir la <a href="https://goo.gl/maps/MaFTr4rt5qp" target="_blank">carte</a> pour les plus visuels.</p>
+            <h3>Logement</h3>
+            <p>À nos amis et notre famille qui ne sont pas de l'Outaouais ou qui souhaitent passer la nuit à l'hôtel, nous vous recommandons ___________________. Service de navette vs raccompagnement ???</p>
+            <h3>Quoi porter</h3>
+            <p>Pour ceux qui cherchent de l'inspiration vestimentaire, vous pouvez vous baser sur les styles cocktails ou tenue de ville; aucune prescription formelle, mais points boni pour ceux et celles qui auront des vêtements ou des accessoires mauves
+                <i class="fa fa-smile-o" aria-hidden="true"></i></p>
+        </div>
+    </section>
+    <section id="france">
+        <article class="coeurcoeurcoeur">
+            <h2>En France</h2>
+            <div class="coeurcoeurcoeur">
+                <p class="fa-heart faa-float animated"></p>
+            </div>
+        </article>
+        <div class="wrapper">
+            <h3>L’invitation</h3>
+            <p>Venez fêter avec nous dans une ambiance décontractée l’heureuse union de deux familles !</p>
+            <p class="carton">
+              samedi le 17 juin 2017<br>
+              à partir de 12h<br>
+              au 23 rue de la Fontaine<br>
+              à Béon 89410, Bourgogne
+            </p>
+            <p> nous vous attendons pour un garden party. Barbecue, jeux de groupe et belles rencontres sont à prévoir.</p>
+            <section id="rsvpFr" class="rsvp">
+              <h3>RSVP</h3>
+            </section>
+            <h3 class="rsvpBefore Fr">Comment s’y rendre</h3>
+            <p>Depuis Paris, prendre l'Autoroute A6 vers le sud, jusqu'à la sortie indiquant Joigny. Suivre la direction Joigny et vous arriverez dans le village de Béon.<br>Une fois à Béon, tourner à la première à droite, continuer sur cette rue jusqu'à voir un grand portail rouge sur votre gauche.<br><a href="https://goo.gl/maps/YRL3NauQbNq" target="_blank">Voir la carte</a></p>
+            <h3>Quoi porter</h3>
+            <p>Selon la température et à votre discrétion; robes d’été et costumes décontractés sont les bienvenus. Les talons hauts sont peu recommandés comme la réception se tiendra sur la pelouse !</p>
+        </div>
+    </section>
+    <section id="histoire">
+        <article class="coeurcoeurcoeur">
+            <h2>Notre histoire</h2>
+            <div class="coeurcoeurcoeur">
+                <p class="fa-heart faa-pulse animated"></p>
+            </div>
+        </article>
+        <div class="wrapper">
+            <p>Il était une fois…</p>
+            <p>Un jeune Français, geek et brillant, venu au Canada dans l’espoir d’y parfaire ses connaissances et d’intégrer le marché florissant de l’informatique. Il y découvrit une contrée fort plaisante, l’ayant charmé avec son doux accent et sa poutine,
+                et commençait à penser s’y établir…</p>
+
+            <p>Une jeune Canadienne, étudiante en médecine, avide de découvrir le monde et de s’imprégner de culture. Elle voulait rencontrer des gens autour d’elle aux intérêts divers, aux projets passionnants…
+            </p>
+
+            <p>C’était en 2014. La magie de l’époque les réunit et le bonheur ne les quitta plus. Voyages, aventures, rires, découvertes s’enchainaient pour prêter à leur vie les couleurs les plus lumineuses. Leur amour ne cessa jamais de croitre, jusqu’à
+                prendre des proportions qui dépassent celles de deux individus… Ils décidèrent de se marier, pour partager tout cet amour et tout ce bonheur et les faire fleurir à la lumière du sourire de ceux qu’ils aiment.</p>
+
+            <p>Ils ont tellement hâte à ce moment magique et aux promesses qui seront échangées sous vos yeux.</p>
+
+            <p>La suite sera écrite, nous l’espérons, en votre compagnie !</p>
+        </div>
+    </section>
+    <section id="cadeaux">
+        <article class="coeurcoeurcoeur">
+            <h2>Cadeaux</h2>
+            <div class="coeurcoeurcoeur">
+                <p class="fa-heart faa-tada animated"></p>
+            </div>
+        </article>
+        <div class="wrapper">
+            <p>Le meilleur cadeau que nous puissions recevoir est celui de votre présence en ce moment spécial pour célébrer avec nous ! Pour ceux qui souhaitent tout de même nous offrir quelque chose, vous pouvez participer à décorer et rendre fonctionnel
+                notre nouveau nid d’amour ou contribuer à notre lune de miel en cliquant sur les liens suivants.</p>
+
+            <p><a href="https://www3.linenchest.com/WD110AWP/WD110Awp.exe/CONNECT/wedding_gift_registry?_WWREFERER_=&amp;_WWNATION_=5&amp;Nation=5&amp;REGID=400101053475" target="_blank">
+        Linen Chest (en magasin ou en ligne)
+        </a></p>
+
+            <p><a href="https://www.honeyfund.com/wedding/catherinexarthur" target="_blank">
+        Honeyfund (en ligne seulement)</a></p>
+
+        </div>
+    </section>
+    <section id="photos">
+        <article class="coeurcoeurcoeur">
+            <h2>Photos</h2>
+            <div class="coeurcoeurcoeur">
+                <p class="fa-heart faa-ring animated"></p>
+            </div>
+        </article>
+        <div class="grid max6">
+        </div>
+        <div class="loadAll">
+            <p class="button" id="loadAllPicture"><i class="fa fa-plus-circle" aria-hidden="true"></i>Charger toutes les images</p>
+        </div>
+    </section>
+    <section id="livredor">
+        <article class="coeurcoeurcoeur">
+            <h2>
          Livre d'or</h2>
-       <div class="coeurcoeurcoeur"><p class="fa-heart faa-bounce animated"></p></div>
-    </article></section>
+            <div class="coeurcoeurcoeur">
+                <p class="fa-heart faa-bounce animated"></p>
+            </div>
+        </article>
+    </section>
 </body>
+
 </html>

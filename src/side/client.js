@@ -17,7 +17,7 @@ $(document).ready(function(){
 
 
   $(window).on("scroll",function(){
-    if ($(window).scrollTop()+1 > $("#cover").innerHeight())
+    if ($(window).scrollTop()+$("body > nav").innerHeight()+1 > $("#cover").innerHeight())
     {$("body > nav").addClass("page");}
     else{
       $("body > nav").removeClass("page");
@@ -25,15 +25,19 @@ $(document).ready(function(){
   });
 
 
-  $("nav > a").on("click",function(e){
+  $("nav > a,nav > div > a.lien").on("click",function(e){
     e.preventDefault();
     $('html,body').animate({
- scrollTop : $("#"+$(this).data("href")).offset().top},'slow');
+ scrollTop : $("#"+$(this).data("href")).offset().top - $("body > nav").height()},'slow');
+  });
+  $("#hamburger").on("click",function(){
+    $("nav").toggleClass("hidden");
   });
 
 
   //Socket management
     var socket = io.connect('/');
+    var adminRights = false;
 
 
     socket.on("authReady",function(){
@@ -58,6 +62,10 @@ $(document).ready(function(){
     socket.on('authSuccess',function(data){
       rsvp(data,socket);
       logedIn();
+      if(data.admin =! undefined && data.admin == 1){
+        adminRights = true;
+        console.log("admin Opérationnel")
+      }
     });
     socket.on('authDenied',askForCode);
     socket.on('announcements', function(data) {
@@ -71,13 +79,13 @@ $(document).ready(function(){
     });
     socket.on('newPicture', function(data) {
         console.log('Add pic:', data.picture);
-        $item = $('<figure class="grid-item"><img src="/thumbs/'+data.picture+'" data-who="'+data.who+'" data-time="'+data.time+'"></figure>');
+        $item = $('<figure class="grid-item"><img src="/thumbs/'+data.picture+'" data-id="'+data.id_pic+'" data-who="'+data.who+'" data-time="'+data.time+'"></figure>');
       $(".grid").prepend( $item );
     });
     socket.on('loadPicture', function(data) {
       for(i=0;i<data.length;i++){
         console.log('Add pic:', data[i].picture);
-        $item = $('<figure class="grid-item"><img src="/thumbs/'+data[i].picture+'" data-who="'+data[i].who+'" data-time="'+data[i].time+'"></figure>');
+        $item = $('<figure class="grid-item"><img src="/thumbs/'+data[i].picture+'" data-id="'+data[i].id_pic+'" data-who="'+data[i].who+'" data-time="'+data[i].time+'"></figure>');
         $(".grid").append( $item );
       }
     });
@@ -133,14 +141,44 @@ $(document).ready(function(){
       });
     }
     function rsvp(data,socket){
-        $rsvp = $('<section id="rsvp"></section>');
-
+        $rsvpQc = $("#rsvpQc");
+        $rsvpQc.html("<h3>RSVP</h3>");
+        $rsvpQc.append("<p>Afin de nous aider à organiser la cérémonie, veuillez nous indiquer si vous serez présent le 8 juin 2017 au Belvédère:</p>");
+        $rsvpFr = $("#rsvpFr");
+        $rsvpFr.html("<h3>RSVP</h3>");
+        $rsvpFr.append("<p>Afin de nous aider à organiser le barbecue, veuillez nous indiquer si vous serez présent le 17 juin 2017 à Béon:</p>");
+        for(i=0;i<data.people.length;i++){
+          console.log(data.people[i]);
+          $personQc = $("<p><strong>"+data.people[i].name+'</strong> participera à la cérémonie : <span class="ouiQc rsvpSpan" data-value="2" data-where="qc" data-id="'+data.people[i].id+'"><i class="fa fa-square-o" aria-hidden="true"></i> Oui</span> / <span class="nonQc rsvpSpan" data-value="0" data-where="qc" data-id="'+data.people[i].id+'"><i class="fa fa-square-o" aria-hidden="true"></i> Non</span>');
+         $personFr = $("<p><strong>"+data.people[i].name+'</strong> participera au barbecue : <span class="ouiFr rsvpSpan" data-value="2" data-where="fr" data-id="'+data.people[i].id+'"><i class="fa fa-square-o" aria-hidden="true"></i> Oui</span> / <span class="nonFr rsvpSpan" data-value="0" data-where="fr" data-id="'+data.people[i].id+'"><i class="fa fa-square-o" aria-hidden="true"></i> Non</span>');
+         if(data.people[i].qc == 2){
+           $personQc.children(".ouiQc").addClass("selected").children("i.fa").addClass("fa-check-square-o").removeClass("fa-square-o");
+         }
+         else if(data.people[i].qc === 0){
+           $personQc.children(".nonQc").addClass("selected").children("i.fa").addClass("fa-check-square-o").removeClass("fa-square-o");
+         }
+         if(data.people[i].fr == 2){
+           $personFr.children(".ouiFr").addClass("selected").children("i.fa").addClass("fa-check-square-o").removeClass("fa-square-o");
+         }
+         else if(data.people[i].fr === 0){
+           $personFr.children(".nonFr").addClass("selected").children("i.fa").addClass("fa-check-square-o").removeClass("fa-square-o");
+         }
+         $rsvpQc.append($personQc);
+         $rsvpFr.append($personFr);
+        }
+        $(".rsvpSpan").on("click",function(){
+          $(this).parent().children(".rsvpSpan").removeClass("selected").children("i.fa").removeClass("fa-check-square-o").addClass("fa-square-o");
+          $(this).addClass("selected").children("i.fa").addClass("fa-check-square-o").removeClass("fa-square-o");
+          socket.emit('rsvp',{where:$(this).data("where"),value:$(this).data("value"),id:$(this).data("id")});
+          //console.log($(this).data("where")+$(this).data("value")+$(this).data("id"));
+        });
     }
     function askForCode(){
       $askForCode = $('<div class="unlockCode"><p class="button clickForCode faa-parent animated-hover"><i class="fa fa-lock faa-vertical" aria-hidden="true"></i> Déverouiller</p></div>');
       $(".uploadPicture").remove();
       $(".unlockCode").remove();
       $("section#photos,section#livredor,section#confirmer").children("article.coeurcoeurcoeur").after($askForCode);
+      $("section.rsvp").append($askForCode);
       $(".clickForCode").hover(function(){
         console.log("hovering");
         $(this).children("i.fa").removeClass("fa-lock").addClass("fa-unlock-alt");
