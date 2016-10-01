@@ -69,6 +69,7 @@ var checkCode = db.prepare("SELECT id_user,group_concat(name, ' & ') as name,max
 var peopleInfo = db.prepare("SELECT id_user,name,qc,fr,allergies FROM invite WHERE code = ?");
 var updatePeopleInfoQc = db.prepare("UPDATE invite SET qc = ? WHERE id_user = ? AND code = ?");
 var updatePeopleInfoFr = db.prepare("UPDATE invite SET fr = ? WHERE id_user = ? AND code = ?");
+var updatePeopleInfoAllergies = db.prepare("UPDATE invite SET allergies = ? WHERE id_user = ? AND code = ?");
 var addPicture = db.prepare("INSERT INTO gallery (`picture`,`code`,`time`) VALUES (?,?,?)");
 
 //Add join table for codes
@@ -240,6 +241,29 @@ io.on('connection', function(socket) {
           }
         }
       }
+    });
+
+    socket.on('allergies',function(data){
+      //update rsvp :
+        //find id_user in people
+        for(i=0;i<socket.handshake.session.people.length;i++){
+          if(socket.handshake.session.people[i].id === data.id){
+            socket.handshake.session.people[i].allergies = data.allergies;
+
+            console.log(socket.handshake.session.people[i].name + ' changed allergies to '+data.allergies);
+
+            //write session
+            session(socket.handshake, {}, function (err) {
+              if (err) { /* handle error */ }
+              var session = socket.handshake.session;
+              // and save session
+              session.save(function (err) { /* handle error */ })
+            });
+
+            //write SQL
+            updatePeopleInfoAllergies.run(data.allergies,data.id,socket.handshake.session.code);
+          }
+        }
     });
 
     socket.on('loadAllImage', function(data) {

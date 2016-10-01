@@ -141,30 +141,35 @@ $(document).ready(function(){
       });
     }
     function rsvp(data,socket){
-        $rsvpQc = $("#rsvpQc");
-        $rsvpQc.html("<h3>RSVP</h3>");
-        $rsvpQc.append("<p>Afin de nous aider à organiser la cérémonie, veuillez nous indiquer si vous serez présent le 8 juin 2017 au Belvédère:</p>");
-        $rsvpFr = $("#rsvpFr");
-        $rsvpFr.html("<h3>RSVP</h3>");
-        $rsvpFr.append("<p>Afin de nous aider à organiser le barbecue, veuillez nous indiquer si vous serez présent le 17 juin 2017 à Béon:</p>");
+        $rsvp = $("#rsvp");
+        $rsvp.append("<p>Merci de nous aider à planifier cette magnifique journée en nous laissant savoir si vous serez de la partie</p>");
         for(i=0;i<data.people.length;i++){
           console.log(data.people[i]);
-          $personQc = $("<p><strong>"+data.people[i].name+'</strong> participera à la cérémonie : <span class="ouiQc rsvpSpan" data-value="2" data-where="qc" data-id="'+data.people[i].id+'"><i class="fa fa-square-o" aria-hidden="true"></i> Oui</span> / <span class="nonQc rsvpSpan" data-value="0" data-where="qc" data-id="'+data.people[i].id+'"><i class="fa fa-square-o" aria-hidden="true"></i> Non</span>');
-         $personFr = $("<p><strong>"+data.people[i].name+'</strong> participera au barbecue : <span class="ouiFr rsvpSpan" data-value="2" data-where="fr" data-id="'+data.people[i].id+'"><i class="fa fa-square-o" aria-hidden="true"></i> Oui</span> / <span class="nonFr rsvpSpan" data-value="0" data-where="fr" data-id="'+data.people[i].id+'"><i class="fa fa-square-o" aria-hidden="true"></i> Non</span>');
-         if(data.people[i].qc == 2){
-           $personQc.children(".ouiQc").addClass("selected").children("i.fa").addClass("fa-check-square-o").removeClass("fa-square-o");
+          $personQc = $personFr = undefined;
+          if(data.people[i].qc !== -1){
+            $personQc = $('<p>Sera présent à la cérémonie le 8 juin 2017 au Belvédère de Wakefield, Qc, Canada: <br><span class="ouiQc rsvpSpan" data-value="2" data-where="qc" data-id="'+data.people[i].id+'"><i class="fa fa-square-o" aria-hidden="true"></i> Oui</span> / <span class="nonQc rsvpSpan" data-value="0" data-where="qc" data-id="'+data.people[i].id+'"><i class="fa fa-square-o" aria-hidden="true"></i> Non</span></p>');
+            if(data.people[i].qc == 2){
+              $personQc.children(".ouiQc").addClass("selected").children("i.fa").addClass("fa-check-square-o").removeClass("fa-square-o");
+            }
+            else if(data.people[i].qc === 0){
+              $personQc.children(".nonQc").addClass("selected").children("i.fa").addClass("fa-check-square-o").removeClass("fa-square-o");
+            }
+          }
+          if(data.people[i].fr !== -1){
+           $personFr = $('<p>Sera présent au barbecue le 17 juin 2017 à Béon, Yonne, France: <br><span class="ouiFr rsvpSpan" data-value="2" data-where="fr" data-id="'+data.people[i].id+'"><i class="fa fa-square-o" aria-hidden="true"></i> Oui</span> / <span class="nonFr rsvpSpan" data-value="0" data-where="fr" data-id="'+data.people[i].id+'"><i class="fa fa-square-o" aria-hidden="true"></i> Non</span></p>');
+           if(data.people[i].fr == 2){
+             $personFr.children(".ouiFr").addClass("selected").children("i.fa").addClass("fa-check-square-o").removeClass("fa-square-o");
+           }
+           else if(data.people[i].fr === 0){
+             $personFr.children(".nonFr").addClass("selected").children("i.fa").addClass("fa-check-square-o").removeClass("fa-square-o");
+           }
          }
-         else if(data.people[i].qc === 0){
-           $personQc.children(".nonQc").addClass("selected").children("i.fa").addClass("fa-check-square-o").removeClass("fa-square-o");
-         }
-         if(data.people[i].fr == 2){
-           $personFr.children(".ouiFr").addClass("selected").children("i.fa").addClass("fa-check-square-o").removeClass("fa-square-o");
-         }
-         else if(data.people[i].fr === 0){
-           $personFr.children(".nonFr").addClass("selected").children("i.fa").addClass("fa-check-square-o").removeClass("fa-square-o");
-         }
-         $rsvpQc.append($personQc);
-         $rsvpFr.append($personFr);
+         $carton = $('<div class="carton"><h3>'+data.people[i].name+'</h3></div>');
+         $carton.append($personQc);
+         $carton.append($personFr);
+         $carton.append('<p>Allergies alimentaires dont nous devrions être au courrant:<p>');
+         $carton.append('<textarea class="allergies" data-id="'+data.people[i].id+'" placeholder="Écrivez ici les allergies alimentaires dont nous devrions être au courant pour vous préparer un menu alternatif en cas de besoin.">'+data.people[i].allergies+'</textarea>');
+         $rsvp.append($carton);
         }
         $(".rsvpSpan").on("click",function(){
           $(this).parent().children(".rsvpSpan").removeClass("selected").children("i.fa").removeClass("fa-check-square-o").addClass("fa-square-o");
@@ -172,13 +177,16 @@ $(document).ready(function(){
           socket.emit('rsvp',{where:$(this).data("where"),value:$(this).data("value"),id:$(this).data("id")});
           //console.log($(this).data("where")+$(this).data("value")+$(this).data("id"));
         });
+        $(".allergies").on("focusout",function(){
+          socket.emit('allergies',{id:$(this).data("id"),allergies:$(this).val()});
+        });
     }
     function askForCode(){
       $askForCode = $('<div class="unlockCode"><p class="button clickForCode faa-parent animated-hover"><i class="fa fa-lock faa-vertical" aria-hidden="true"></i> Déverouiller</p></div>');
       $(".uploadPicture").remove();
       $(".unlockCode").remove();
       $("section#photos,section#livredor,section#confirmer").children("article.coeurcoeurcoeur").after($askForCode);
-      $("section.rsvp").append($askForCode);
+      $("#rsvp").append($askForCode);
       $(".clickForCode").hover(function(){
         console.log("hovering");
         $(this).children("i.fa").removeClass("fa-lock").addClass("fa-unlock-alt");
