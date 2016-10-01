@@ -47,16 +47,19 @@ db.serialize(function() {
 
     //Create invite table for your guests
     db.run("CREATE TABLE invite (id_user INTEGER PRIMARY KEY, name TEXT, status INTEGER DEFAULT 0, code TEXT, admin INTEGER DEFAULT 0, qc INTEGER DEFAULT 1, fr INTEGER DEFAULT 1, allergies TEXT)");
-    var admin = db.prepare("INSERT INTO invite (`name`, `code`, `admin`, 'qc', 'fr', 'allergies') VALUES (?,?,?,?,?,?)");
+    var addAdmin = db.prepare("INSERT INTO invite (`name`, `code`, `admin`, 'qc', 'fr', 'allergies') VALUES (?,?,1,?,?,?)");
+    var addGuest = db.prepare("INSERT INTO invite (`name`, `code`, `admin`, 'qc', 'fr', 'allergies') VALUES (?,?,0,?,?,?)");
     //create gallery table for pictures of the wedding
     db.run("CREATE TABLE coverPics (id_cover INTEGER PRIMARY KEY, picture TEXT)");
     //create gallery table for pictures of the wedding
     db.run("CREATE TABLE gallery (id_pic INTEGER PRIMARY KEY, picture TEXT, unpublish INTEGER DEFAULT 0, code TEXT, time INTEGER)");
     //Create guestbook table
-    db.run("CREATE TABLE guestbook (id_guest INTEGER PRIMARY KEY, text TEXT, unpublish INTEGER DEFAULT 0, code TEXT)");
+    db.run("CREATE TABLE guestbook (id_guest INTEGER PRIMARY KEY, text TEXT, unpublish INTEGER DEFAULT 0, code TEXT, time INTEGER)");
   //insert admin here
-      admin.run("Arthur","MyPassword",1,2,2,"");
-      admin.run("Catherine","MyPassword",1,2,2,"");
+      addAdmin.run("Arthur","MyPassword",2,2,"");
+      addAdmin.run("Catherine","MyPassword",2,2,"");
+  //insert guest here
+      addGuest.run("Guest1","LeMotDePass",1,1,"");
   }
 
   db.each("SELECT id_user AS id,name,code FROM invite", function(err, row) {
@@ -71,10 +74,8 @@ var updatePeopleInfoQc = db.prepare("UPDATE invite SET qc = ? WHERE id_user = ? 
 var updatePeopleInfoFr = db.prepare("UPDATE invite SET fr = ? WHERE id_user = ? AND code = ?");
 var updatePeopleInfoAllergies = db.prepare("UPDATE invite SET allergies = ? WHERE id_user = ? AND code = ?");
 var addPicture = db.prepare("INSERT INTO gallery (`picture`,`code`,`time`) VALUES (?,?,?)");
+var addGuestBook = db.prepare("INSERT INTO guestbook (`text`,`code`,`time`) VALUES (?,?,?)");
 
-//Add join table for codes
-var loadPicture = db.prepare("SELECT g.picture, g.time, group_concat(i.name, ' & ') as who, g.id_pic FROM gallery g JOIN invite i WHERE g.unpublish = 0 GROUP BY g.id_pic ORDER BY g.id_pic DESC LIMIT 6 OFFSET 0");
-var loadAllPicture = db.prepare("SELECT g.picture, g.time, group_concat(i.name, ' & ') as who, g.id_pic FROM gallery g JOIN invite i WHERE g.unpublish = 0 GROUP BY g.id_pic ORDER BY g.id_pic DESC LIMIT -1 OFFSET 0");
 
 
 // Attach session
@@ -164,10 +165,17 @@ io.on('connection', function(socket) {
     }
 
     var pictures = [];
-      db.each("SELECT g.picture, g.time, group_concat(i.name, ' & ') as who, g.id_pic FROM gallery g JOIN invite i WHERE g.unpublish = 0 GROUP BY g.id_pic ORDER BY g.id_pic DESC LIMIT 6 OFFSET 0",function(err,row){
+      db.each("SELECT g.picture, g.time, group_concat(i.name, ' & ') as who, g.id_pic FROM gallery g JOIN invite i ON i.code = g.code WHERE g.unpublish = 0 GROUP BY g.id_pic ORDER BY g.id_pic DESC LIMIT 6 OFFSET 0",function(err,row){
         pictures.push(row);
       },function(){
         socket.emit('loadPicture',pictures);
+    });
+
+    var guestbook = [];
+      db.each("SELECT g.id_guest, g.text, g.time, group_concat(i.name, ' & ') as who FROM guestbook g JOIN invite i ON i.code = g.code WHERE g.unpublish = 0 GROUP BY g.id_guest ORDER BY g.id_guest DESC LIMIT 6 OFFSET 0",function(err,row){
+        guestbook.push(row);
+      },function(){
+        socket.emit('loadGuestBook',guestbook);
     });
 
     socket.on('auth', function(data) {
@@ -243,6 +251,16 @@ io.on('connection', function(socket) {
       }
     });
 
+    socket.on('addGuestBook',function(data){
+      if(undefined != socket.handshake.session.code){
+      addGuestBook.run(data.text,socket.handshake.session.code,Date.now(),function(err){
+              if(err){}
+              else{console.log("Nouvelle entrée dans le livre d'or : "+this.lastID);}
+              io.sockets.emit('newGuestBook', {text : data.text, who : socket.handshake.session.name, time : Date.now(), id_guest : this.lastID});
+            });
+      }
+
+    });
     socket.on('allergies',function(data){
       //update rsvp :
         //find id_user in people
@@ -268,10 +286,19 @@ io.on('connection', function(socket) {
 
     socket.on('loadAllImage', function(data) {
       var pictures = [];
-        db.each("SELECT g.picture, g.time, group_concat(i.name, ' & ') as who, g.id_pic FROM gallery g JOIN invite i WHERE g.unpublish = 0 GROUP BY g.id_pic ORDER BY g.id_pic DESC LIMIT -1 OFFSET 6",function(err,row){
+        db.each("SELECT g.picture, g.time, group_concat(i.name, ' & ') as who, g.id_pic FROM gallery g JOIN invite i ON i.code = g.code WHERE g.unpublish = 0 GROUP BY g.id_pic ORDER BY g.id_pic DESC LIMIT -1 OFFSET 6",function(err,row){
           pictures.push(row);
         },function(){
           socket.emit('loadAllPicture',pictures);
+      });
+    });
+
+    socket.on('loadAllGuestBook', function(data) {
+      var guestbook = [];
+        db.each("SELECT g.id_guest,g.text, g.time, group_concat(i.name, ' & ') as who FROM guestbook g JOIN invite i ON i.code = g.code WHERE g.unpublish = 0 GROUP BY g.id_guest ORDER BY g.id_guest DESC LIMIT -1 OFFSET 6",function(err,row){
+          guestbook.push(row);
+        },function(){
+          socket.emit('loadAllGuestBook',guestbook);
       });
     });
 

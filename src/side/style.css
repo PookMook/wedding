@@ -3,7 +3,7 @@ body{
 
   padding:0;
   margin:0;
-  font-size:calc(1em + 1vw);
+  font-size:calc(1em + 0.5vw);
 }
 
 h1 {
@@ -74,19 +74,23 @@ nav {
   display:none;
 }
 
-p.carton, div.carton {
-  margin: 1em 6em;
+p.carton, div.carton, article.carton {
+  margin: 1em 0;
   border:1px solid #674172;
   padding:1em;
   background-color:#F9F5FA;
 }
+p.carton {
+    margin: 1em 6em;
+}
 
-p.carton textarea, div.carton textarea{
+div.carton textarea{
 margin: 0px;
 width: 100%;
 height: 6em;
 padding: 1em;
 box-sizing: border-box;
+border:1px solid #674172;
 }
 
 body > section:nth-child(2n+1) p.carton,body > section:nth-child(2n+1) div.carton{
@@ -123,7 +127,7 @@ nav > a,nav > div > a {
   padding:1em;
   flex:0 0 auto;
   color:#674172;
-  font-size:0.4em;
+  font-size:0.6em;
   transition:color 1s ease;
   cursor:pointer;
   user-select: none;
@@ -231,6 +235,28 @@ section#ceremonie > div.overlay,section#ceremonie > div.overlay > a,section#cere
   left: 0;
   right: 0;
   width: 100%;
+}
+section#livredor form{
+  max-width:24em;
+  width:100%;
+  margin:0 auto;
+}
+section#livredor textarea{
+  display:block;
+  width:100%;
+  padding:1em;
+  height:6em;
+  box-sizing: border-box;
+  border:1px solid #674172;
+  background-color:#F9F5FA;
+}
+section#livredor input{
+  background-color: #674172;
+  color:white;
+  margin:0.5em 0 0.5em auto;
+  display:block;
+  border: none;
+  padding: 0.5em 1.5em;
 }
 #blackout,#popupMax {
   position: fixed;
@@ -350,7 +376,7 @@ input.hidden{
   max-width:calc((3 * 290px) + 2em );
   margin:0 auto;
 }
-.grid.max6 > .grid-item:nth-child(n+7){
+.grid.max6 > .grid-item:nth-child(n+7),.guestBooks.max6 > article:nth-child(n+7){
   display:none;
 }
 .grid-item {
@@ -374,4 +400,23 @@ input.hidden{
 
 .rsvpSpan.selected {
   font-weight: bold;
+}
+
+.guestBooks {
+  padding-top: 1em;
+}
+article.guestBook > p.text{
+  margin-bottom: 0;
+}
+article.guestBook > p.text:before{
+    content:"« ";
+    color:#674172;
+}
+article.guestBook > p.text:after{
+    content:" »";
+    color:#674172;
+}
+article.guestBook > p.author{
+  margin: 0;
+  text-align: right;
 }

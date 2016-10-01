@@ -61,6 +61,7 @@ $(document).ready(function(){
 
     socket.on('authSuccess',function(data){
       rsvp(data,socket);
+      guestbook(data,socket);
       logedIn();
       if(data.admin =! undefined && data.admin == 1){
         adminRights = true;
@@ -91,17 +92,42 @@ $(document).ready(function(){
     });
     socket.on('loadAllPicture', function(data) {
       $(".grid").removeClass("max6").children(".grid-item:gt(5)").remove();
-      $("#loadAllPicture").remove();
+      $(".loadAll").remove();
       for(i=0;i<data.length;i++){
         console.log('Add pic:', data[i].picture);
         $item = $('<figure class="grid-item"><img src="/thumbs/'+data[i].picture+'" data-who="'+data[i].who+'" data-time="'+data[i].time+'"></figure>');
         $(".grid").append( $item );
       }
     });
+    socket.on('newGuestBook', function(data) {
+        console.log('Add guest:', data.text);
+        $item = $('<article class="guestBook carton"><p class="text">'+nl2br(data.text)+'</p><p class="author">'+data.who+'</p></article>');
+      $("#livredor .guestBooks").prepend( $item );
+    });
+    socket.on('loadGuestBook', function(data) {
+      for(i=0;i<data.length;i++){
+        console.log('Add Guest:', data[i].text);
+        $item = $('<article class="guestBook carton"><p class="text">'+nl2br(data[i].text)+'</p><p class="author">'+data[i].who+'</p></article>');
+        $("#livredor .guestBooks").append( $item );
+      }
+    });
+    socket.on('loadAllGuestBook', function(data) {
+      $("#livredor .guestBooks").removeClass("max6").children("article:gt(5)").remove();
+      $(".loadAllGuestBooks").remove();
+      for(i=0;i<data.length;i++){
+        console.log('Add Guest:', data[i].text);
+        $item = $('<article class="guestBook carton"><p class="text">'+nl2br(data[i].text)+'</p><p class="author">'+data[i].who+'</p></article>');
+        $("#livredor .guestBooks").append( $item );
+      }
+    });
 
     $("#loadAllPicture").on("click",function(){
       $(this).children("i.fa").addClass("faa-spin animated");
       socket.emit('loadAllImage');
+    });
+    $("#loadAllGuestBooks").on("click",function(){
+      $(this).children("i.fa").addClass("faa-spin animated");
+      socket.emit('loadAllGuestBook');
     });
 
 
@@ -140,8 +166,19 @@ $(document).ready(function(){
         }
       });
     }
+    function guestbook(data,socket){
+      $("#livredor > .coeurcoeurcoeur").after('<form id="newGuestBook"><textarea class="guestbook" placeholder=""></textarea><input type="submit" value="Petit coucou!"></form>');
+      $("#livredor > .coeurcoeurcoeur").after('<p>Faites-nous un petit coucou !</p>');
+
+      $("#livredor > form").on("submit",function(e){
+        e.preventDefault();
+        //console.log($(this).children("textarea").val());
+        socket.emit('addGuestBook',{text:$(this).children("textarea").val()});
+        $(this).children("textarea").val("");
+      });
+    }
     function rsvp(data,socket){
-        $rsvp = $("#rsvp");
+        $rsvp = $("#rsvp .wrapper");
         $rsvp.append("<p>Merci de nous aider à planifier cette magnifique journée en nous laissant savoir si vous serez de la partie</p>");
         for(i=0;i<data.people.length;i++){
           console.log(data.people[i]);
@@ -214,6 +251,10 @@ $(document).ready(function(){
         });
       });
 
+    }
+    function nl2br (str) {
+      var breakTag = '<br>';
+      return (str + '').replace(/([^>\r\n]?)(\r\n|\n\r|\r|\n)/g, '$1' + breakTag + '$2');
     }
 
 });
