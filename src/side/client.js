@@ -179,7 +179,7 @@ $(document).ready(function(){
     }
     function rsvp(data,socket){
         $rsvp = $("#rsvp .wrapper");
-        $rsvp.append("<p>Merci de nous aider à planifier cette magnifique journée en nous laissant savoir si vous serez de la partie</p>");
+        $rsvp.append("<p>Merci de nous aider à planifier cette magnifique journée en nous laissant savoir si vous serez de la partie.</p>");
         for(i=0;i<data.people.length;i++){
           console.log(data.people[i]);
           $personQc = $personFr = undefined;
@@ -193,7 +193,7 @@ $(document).ready(function(){
             }
           }
           if(data.people[i].fr !== -1){
-           $personFr = $('<p>Sera présent au barbecue le 17 juin 2017 à Béon, Yonne, France: <br><span class="ouiFr rsvpSpan" data-value="2" data-where="fr" data-id="'+data.people[i].id+'"><i class="fa fa-square-o" aria-hidden="true"></i> Oui</span> / <span class="nonFr rsvpSpan" data-value="0" data-where="fr" data-id="'+data.people[i].id+'"><i class="fa fa-square-o" aria-hidden="true"></i> Non</span></p>');
+           $personFr = $('<p>Sera présent au barbecue le 17 juin 2017 à Béon, Bourgogne, France: <br><span class="ouiFr rsvpSpan" data-value="2" data-where="fr" data-id="'+data.people[i].id+'"><i class="fa fa-square-o" aria-hidden="true"></i> Oui</span> / <span class="nonFr rsvpSpan" data-value="0" data-where="fr" data-id="'+data.people[i].id+'"><i class="fa fa-square-o" aria-hidden="true"></i> Non</span></p>');
            if(data.people[i].fr == 2){
              $personFr.children(".ouiFr").addClass("selected").children("i.fa").addClass("fa-check-square-o").removeClass("fa-square-o");
            }
@@ -204,8 +204,9 @@ $(document).ready(function(){
          $carton = $('<div class="carton"><h3>'+data.people[i].name+'</h3></div>');
          $carton.append($personQc);
          $carton.append($personFr);
-         $carton.append('<p>Allergies alimentaires dont nous devrions être au courrant:<p>');
-         $carton.append('<textarea class="allergies" data-id="'+data.people[i].id+'" placeholder="Écrivez ici les allergies alimentaires dont nous devrions être au courant pour vous préparer un menu alternatif en cas de besoin.">'+data.people[i].allergies+'</textarea>');
+         $carton.append('<p>Restrictions alimentaires dont nous devrions être au courant:<p>');
+         $carton.append('<textarea class="allergies" data-id="'+data.people[i].id+'" placeholder="Je suis ...">'+data.people[i].allergies+'</textarea>');
+         $carton.append('<p class="closeSave"><span class="saveMe">Sauvegarder</span></p>');
          $rsvp.append($carton);
         }
         $(".rsvpSpan").on("click",function(){
@@ -216,6 +217,9 @@ $(document).ready(function(){
         });
         $(".allergies").on("focusout",function(){
           socket.emit('allergies',{id:$(this).data("id"),allergies:$(this).val()});
+        });
+        $(".saveMe").on("click",function(){
+          $(this).html("Merci, votre réponse est bien notée.");
         });
     }
     function askForCode(){

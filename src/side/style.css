@@ -256,7 +256,21 @@ section#livredor input{
   margin:0.5em 0 0.5em auto;
   display:block;
   border: none;
+  cursor: pointer;
   padding: 0.5em 1.5em;
+}
+.closeSave{
+  margin:0;
+  text-align: right;
+}
+.saveMe{
+  background-color: #674172;
+  color:white;
+  margin:0.5em 0 0.5em auto;
+  display:inline-block;
+  border: none;
+  padding: 0.5em 1.5em;
+  cursor: pointer;
 }
 #blackout,#popupMax {
   position: fixed;
