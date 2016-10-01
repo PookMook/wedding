@@ -60,6 +60,8 @@ db.serialize(function() {
       addAdmin.run("Catherine","MyPassword",2,2,"");
   //insert guest here
       addGuest.run("Guest1","LeMotDePass",1,1,"");
+      addGuest.run("Josée","BoubouParents",1,1,"");
+      addGuest.run("Jean","boubouParents",1,1,"");
   }
 
   db.each("SELECT id_user AS id,name,code FROM invite", function(err, row) {
@@ -326,4 +328,4 @@ function makeid()
 }
 
 
-server.listen(8080);
+server.listen(80);
