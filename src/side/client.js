@@ -65,7 +65,7 @@ $(document).ready(function(){
       logedIn();
       if(data.admin =! undefined && data.admin == 1){
         adminRights = true;
-        console.log("admin Opérationnel")
+        console.log("admin Op&eacute;rationnel")
       }
     });
     socket.on('authDenied',askForCode);
@@ -179,12 +179,12 @@ $(document).ready(function(){
     }
     function rsvp(data,socket){
         $rsvp = $("#rsvp .wrapper");
-        $rsvp.append("<p>Merci de nous aider à planifier cette magnifique journée en nous laissant savoir si vous serez de la partie.</p>");
+        $rsvp.append("<p>Merci de nous aider &agrave; planifier cette magnifique journ&eacute;e en nous laissant savoir si vous serez de la partie.</p>");
         for(i=0;i<data.people.length;i++){
           console.log(data.people[i]);
           $personQc = $personFr = undefined;
           if(data.people[i].qc !== -1){
-            $personQc = $('<p>Sera présent à la cérémonie le 8 juin 2017 au Belvédère de Wakefield, Qc, Canada: <br><span class="ouiQc rsvpSpan" data-value="2" data-where="qc" data-id="'+data.people[i].id+'"><i class="fa fa-square-o" aria-hidden="true"></i> Oui</span> / <span class="nonQc rsvpSpan" data-value="0" data-where="qc" data-id="'+data.people[i].id+'"><i class="fa fa-square-o" aria-hidden="true"></i> Non</span></p>');
+            $personQc = $('<p>Assistera &agrave; la c&eacute;r&eacute;monie le 8 juin 2017 au Belv&eacute;d&egrave;re de Wakefield, Qc, Canada: <br><span class="ouiQc rsvpSpan" data-value="2" data-where="qc" data-id="'+data.people[i].id+'"><i class="fa fa-square-o" aria-hidden="true"></i> Oui</span> / <span class="nonQc rsvpSpan" data-value="0" data-where="qc" data-id="'+data.people[i].id+'"><i class="fa fa-square-o" aria-hidden="true"></i> Non</span></p>');
             if(data.people[i].qc == 2){
               $personQc.children(".ouiQc").addClass("selected").children("i.fa").addClass("fa-check-square-o").removeClass("fa-square-o");
             }
@@ -193,7 +193,7 @@ $(document).ready(function(){
             }
           }
           if(data.people[i].fr !== -1){
-           $personFr = $('<p>Sera présent au barbecue le 17 juin 2017 à Béon, Bourgogne, France: <br><span class="ouiFr rsvpSpan" data-value="2" data-where="fr" data-id="'+data.people[i].id+'"><i class="fa fa-square-o" aria-hidden="true"></i> Oui</span> / <span class="nonFr rsvpSpan" data-value="0" data-where="fr" data-id="'+data.people[i].id+'"><i class="fa fa-square-o" aria-hidden="true"></i> Non</span></p>');
+           $personFr = $('<p>Assistera au barbecue le 17 juin 2017 &agrave; B&eacute;on, Bourgogne, France: <br><span class="ouiFr rsvpSpan" data-value="2" data-where="fr" data-id="'+data.people[i].id+'"><i class="fa fa-square-o" aria-hidden="true"></i> Oui</span> / <span class="nonFr rsvpSpan" data-value="0" data-where="fr" data-id="'+data.people[i].id+'"><i class="fa fa-square-o" aria-hidden="true"></i> Non</span></p>');
            if(data.people[i].fr == 2){
              $personFr.children(".ouiFr").addClass("selected").children("i.fa").addClass("fa-check-square-o").removeClass("fa-square-o");
            }
@@ -204,7 +204,7 @@ $(document).ready(function(){
          $carton = $('<div class="carton"><h3>'+data.people[i].name+'</h3></div>');
          $carton.append($personQc);
          $carton.append($personFr);
-         $carton.append('<p>Restrictions alimentaires dont nous devrions être au courant:<p>');
+         $carton.append('<p>Restrictions alimentaires dont nous devrions &ecirc;tre au courant:<p>');
          $carton.append('<textarea class="allergies" data-id="'+data.people[i].id+'" placeholder="Je suis ...">'+data.people[i].allergies+'</textarea>');
          $carton.append('<p class="closeSave"><span class="saveMe">Sauvegarder</span></p>');
          $rsvp.append($carton);
@@ -219,11 +219,11 @@ $(document).ready(function(){
           socket.emit('allergies',{id:$(this).data("id"),allergies:$(this).val()});
         });
         $(".saveMe").on("click",function(){
-          $(this).html("Merci, votre réponse est bien notée.");
+          $(this).html("Merci, votre r&eacute;ponse est bien not&eacute;e.");
         });
     }
     function askForCode(){
-      $askForCode = $('<div class="unlockCode"><p class="button clickForCode faa-parent animated-hover"><i class="fa fa-lock faa-vertical" aria-hidden="true"></i> Déverouiller</p></div>');
+      $askForCode = $('<div class="unlockCode"><p class="button clickForCode faa-parent animated-hover"><i class="fa fa-lock faa-vertical" aria-hidden="true"></i> D&eacute;verouiller</p></div>');
       $(".uploadPicture").remove();
       $(".unlockCode").remove();
       $("section#photos,section#livredor,section#confirmer").children("article.coeurcoeurcoeur").after($askForCode);
@@ -235,7 +235,7 @@ $(document).ready(function(){
         $(this).children("i.fa").removeClass("fa-unlock-alt").addClass("fa-lock");
       });
       $(".clickForCode").on("click",function(){
-        $popupCode = $('<div id="blackout"></div><div id="popupMax"><div id="popup"><i class="fa fa-times" aria-hidden="true" id="closeModal"></i><h1>Entrez le code reçu par courriel</h1><input type="text" placeholder="MonSuperCode" name="code"><p id="sendCode"><i class="fa fa-cog" aria-hidden="true"></i> Déverouiller</p></div></div>');
+        $popupCode = $('<div id="blackout"></div><div id="popupMax"><div id="popup"><i class="fa fa-times" aria-hidden="true" id="closeModal"></i><h1>Entrez le code re&ccedil;u par courriel</h1><input type="text" placeholder="MonSuperCode" name="code"><p id="sendCode"><i class="fa fa-cog" aria-hidden="true"></i> D&eacute;verouiller</p></div></div>');
         $('body').append($popupCode);
         $("#closeModal").on("click",function(){
           console.log("remove popup");
@@ -250,7 +250,7 @@ $(document).ready(function(){
           console.log($(this).prev("input").val());
           socket.emit('auth', { code: $(this).prev("input").val() });
           socket.on("authDenied",function(){
-            $("#sendCode").html('<i class="fa fa-exclamation-triangle faa-ring animated" aria-hidden="true"></i> Oups, réessayer');
+            $("#sendCode").html('<i class="fa fa-exclamation-triangle faa-ring animated" aria-hidden="true"></i> Oups, r&eacute;essayer');
           });
         });
       });
