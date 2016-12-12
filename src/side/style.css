@@ -221,8 +221,30 @@ div.coeurcoeurcoeur > p.fa-heart:before {
   padding:0.1em;
 }
 
-
-
+#clockdiv{
+  display: -webkit-flex;
+  -webkit-flex-direction: row;
+  -webkit-flex-wrap: nowrap;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  position: absolute;
+  bottom:2em;
+}
+#clockdiv > p {
+  color: white;
+  background-color: rgba(103, 65, 114,0.5);
+  text-shadow: none;
+  padding: 1em;
+  line-height: 1;
+  margin:0;
+}
+#clockdiv > p > span{
+  display:block;
+}
+#clockdiv > p > span:first-child{
+  font-size: 3em;
+}
 
 section#ceremonie,section#barbecue {
   position:relative;
