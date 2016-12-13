@@ -230,8 +230,22 @@ div.coeurcoeurcoeur > p.fa-heart:before {
   flex-wrap: nowrap;
   position: absolute;
   bottom:2em;
+  width:440px;
+  max-width: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+}
+@media ONLY screen AND (max-width:600px){
+  #clockdiv{
+    margin-top:3em;
+    position:relative;
+    bottom:auto;
+    left: auto;
+    transform: none;
+  }
 }
 #clockdiv > p {
+  flex:1 1 25%;
   color: white;
   background-color: rgba(103, 65, 114,0.5);
   text-shadow: none;
