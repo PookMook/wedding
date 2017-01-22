@@ -205,7 +205,7 @@ $(document).ready(function(){
          $carton.append($personQc);
          $carton.append($personFr);
          $carton.append('<p>Restrictions alimentaires dont nous devrions &ecirc;tre au courant:<p>');
-         $carton.append('<textarea class="allergies" data-id="'+data.people[i].id+'" placeholder="Je suis ...">'+data.people[i].allergies+'</textarea>');
+         $carton.append('<textarea class="allergies" data-id="'+data.people[i].id+'" placeholder="Mon choix de repas est ... (merci de pr&eacute;ciser toute allergie ou restriction alimentaire) ">'+data.people[i].allergies+'</textarea>');
          $carton.append('<p class="closeSave"><span class="saveMe">Sauvegarder</span></p>');
          $rsvp.append($carton);
         }
