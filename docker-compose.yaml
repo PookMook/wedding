@@ -6,10 +6,10 @@ services:
     container_name: wedding
     restart: always
     environment:
-      - VIRTUAL_HOST=catherine-et-arthur.ca
+      - VIRTUAL_HOST=mariage.juchereau.com
       - VIRTUAL_NETWORK=nginx-proxy
       - VIRTUAL_PORT=80
-      - LETSENCRYPT_HOST=catherine-et-arthur.ca
+      - LETSENCRYPT_HOST=mariage.juchereau.com
       - LETSENCRYPT_EMAIL=arthur.juchereau@gmail.com
 networks:
   default:
